@@ -2,17 +2,18 @@
 import { useRef, useState } from "react";
 import SignaturePad from "react-signature-canvas";
 
+type RequestKey = "修理" | "点検" | "改造" | "脱着";
 
 export function ReportForm1() {
   const sigCanvas = useRef<SignaturePad>(null);
-  const [requests, setRequests] = useState({
+  const [requests, setRequests] = useState<Record<RequestKey, boolean>>({
     修理: false,
     点検: false,
     改造: false,
     脱着: false,
   });
 
-  function toggleRequest(key: string) {
+  function toggleRequest(key: RequestKey) {
     setRequests((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
@@ -44,7 +45,7 @@ export function ReportForm1() {
       <div className="mb-4">
         <label>依頼内容：</label>
         <div className="flex gap-2">
-          {Object.keys(requests).map((key) => (
+          {(Object.keys(requests) as RequestKey[]).map((key) => (
             <label key={key}>
               <input
                 type="checkbox"
@@ -70,7 +71,7 @@ export function ReportForm1() {
         />
         <button
           type="button"
-          onClick={() => sigCanvas.current.clear()}
+          onClick={() => sigCanvas.current?.clear()}
           className="mt-2 text-sm text-red-500"
         >
           署名クリア
