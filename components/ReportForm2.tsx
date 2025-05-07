@@ -59,7 +59,7 @@ export function ReportForm2() {
         />
         <button
           type="button"
-          onClick={() => sigCanvas.current.clear()}
+          onClick={() => sigCanvas.current?.clear()}
           className="mt-2 text-sm text-red-500"
         >
           署名クリア
