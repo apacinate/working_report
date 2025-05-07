@@ -20,7 +20,7 @@ export function ReportForm2() {
     return (
         <div className="relative max-w-4xl mx-auto">
             <img
-                src="/form2-background.png"
+                src="/working_report2.png"
                 alt="記載方法フォーム"
                 className="w-full"
             />

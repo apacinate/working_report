@@ -20,7 +20,7 @@ export function ReportForm1() {
   return (
     <div className="relative max-w-4xl mx-auto">
     <img
-      src="/form1-background.png"
+      src="/working_report1.png"
       alt="作業報告書"
       className="w-full"
     />
