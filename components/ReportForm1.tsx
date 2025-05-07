@@ -18,56 +18,46 @@ export function ReportForm1() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-xl font-bold mb-4">作業報告書</h1>
-
+    <div className="relative max-w-4xl mx-auto">
+    <img
+      src="/form1-background.png"
+      alt="作業報告書"
+      className="w-full"
+    />
+    <div className="absolute top-0 left-0 w-full h-full p-4">
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <label>作業実施日：</label>
-          <input type="date" className="border p-1 w-full" />
-        </div>
-        <div>
-          <label>受付番号：</label>
-          <input type="text" className="border p-1 w-full" />
-        </div>
+        <input type="date" className="border p-1 w-full" />
+        <input type="text" className="border p-1 w-full" />
       </div>
 
-      <div className="mb-4">
-        <label>機種名：</label>
-        <select className="border p-1 w-full">
-          <option>Flair</option>
-          <option>Evolution</option>
-          <option>Sinfonia</option>
-          <option>Spectra</option>
-        </select>
-      </div>
+      <select className="border p-1 w-full mb-4">
+        <option>Flair</option>
+        <option>Evolution</option>
+        <option>Sinfonia</option>
+        <option>Spectra</option>
+      </select>
 
-      <div className="mb-4">
-        <label>依頼内容：</label>
-        <div className="flex gap-2">
-          {(Object.keys(requests) as RequestKey[]).map((key) => (
+      <div className="flex gap-4 mb-4">
+        {(Object.keys(requests) as RequestKey[]).map((key) => (
             <label key={key}>
-              <input
+                <input
                 type="checkbox"
                 checked={requests[key]}
                 onChange={() => toggleRequest(key)}
-              />
-              {key}
+                />
+                {key}
             </label>
-          ))}
-        </div>
+        ))}
       </div>
 
-      <div className="mb-4">
-        <label>診断内容・作業内容：</label>
-        <textarea className="border p-2 w-full h-24"></textarea>
-      </div>
+      <textarea className="border p-2 w-full h-24 mb-4"></textarea>
 
       <div className="mb-4">
-        <label>署名（サイン）：</label>
         <SignaturePad
           ref={sigCanvas}
-          canvasProps={{ className: "border w-full h-32" }}
+          canvasProps={{
+            className: "border w-full h-32 bg-transparent",
+          }}
         />
         <button
           type="button"
@@ -82,5 +72,6 @@ export function ReportForm1() {
         提出する
       </button>
     </div>
+  </div>
   );
 }
