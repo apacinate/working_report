@@ -60,8 +60,9 @@ export function ReportForm1() {
   };
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-gray-100">
-      <div className="max-w-full h-full relative touch-none">
+    <div className="w-full h-screen flex flex-col bg-gray-100">
+      {/* ズーム・移動可能な領域 */}
+      <div className="flex-1 overflow-hidden relative">
         <div
           onWheel={handleWheel}
           onTouchStart={handleTouchStart}
@@ -70,7 +71,6 @@ export function ReportForm1() {
           style={{
             transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
             transformOrigin: "0 0",
-            transition: isDragging ? "none" : "transform 0.1s ease-out",
             width: 800,
             height: 1131,
             margin: "0 auto",
@@ -78,7 +78,6 @@ export function ReportForm1() {
             touchAction: "none",
           }}
         >
-          {/* 背景画像キャンバス */}
           <canvas
             ref={canvasRef}
             width={800}
@@ -93,7 +92,6 @@ export function ReportForm1() {
             }}
           />
 
-          {/* サインパッド */}
           <SignaturePad
             ref={sigCanvas}
             canvasProps={{
@@ -110,15 +108,16 @@ export function ReportForm1() {
             }}
           />
         </div>
+      </div>
 
-        <div className="absolute bottom-4 left-0 w-full px-4 z-50">
-          <button
-            onClick={clearSignature}
-            className="bg-red-500 text-white px-4 py-2 rounded w-full"
-          >
-            署名をクリア
-          </button>
-        </div>
+      {/* フッターにボタン固定 */}
+      <div className="p-4 bg-white shadow-md sticky bottom-0 z-50">
+        <button
+          onClick={clearSignature}
+          className="bg-red-500 text-white px-4 py-2 rounded w-full"
+        >
+          署名をクリア
+        </button>
       </div>
     </div>
   );
