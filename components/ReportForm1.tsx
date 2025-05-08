@@ -13,13 +13,16 @@ export function ReportForm1() {
     if (canvas) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = "/working_report1.png"; // publicディレクトリに置いた画像
+      img.src = "/working_report1.png"; // publicディレクトリにあることを想定
+      img.crossOrigin = "anonymous"; // 必要に応じてCORS対応
       img.onload = () => {
-        // 画像のサイズにキャンバスを合わせる
-        canvas.width = img.width;
-        canvas.height = img.height;
-
-        ctx?.drawImage(img, 0, 0);
+        // キャンバスサイズを固定する例
+        canvas.width = 800; // 仮に幅800px
+        canvas.height = 600; // 仮に高さ600px
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      img.onerror = () => {
+        console.error("画像の読み込みに失敗しました。パスを再確認してください！");
       };
     }
   }, []);
