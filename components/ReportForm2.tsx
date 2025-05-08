@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import SignaturePad from "react-signature-canvas";
 
-export function ReportForm1() {
+export function ReportForm2() {
   const sigPadRef = useRef<SignaturePad>(null);
 
   const clearSignature = () => {
