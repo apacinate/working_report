@@ -4,20 +4,23 @@ import { useRef, useEffect, useState } from "react";
 import SignaturePad from "react-signature-canvas";
 
 export function ReportForm2() {
-  const sigCanvas = useRef<SignaturePad | null>(null); // 型指定と初期値
-  const canvasRef = useRef<HTMLCanvasElement | null>(null); // 背景描画用キャンバス
+  const sigCanvas = useRef<SignaturePad | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [reasonCode, setReasonCode] = useState("");
   const [workCode, setWorkCode] = useState("");
 
   useEffect(() => {
-    // 背景画像をキャンバスに描画
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = "/working_report2.png"; // 背景画像のパス
+      img.src = "/working_report2.png"; // publicフォルダ内に配置すること
       img.onload = () => {
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // キャンバスサイズを画像に合わせて設定
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx?.drawImage(img, 0, 0);
       };
     }
   }, []);
@@ -36,29 +39,33 @@ export function ReportForm2() {
   ];
 
   return (
-    <div className="relative max-w-4xl mx-auto">
-      {/* 背景画像をキャンバスに描画 */}
+    <div className="relative max-w-4xl mx-auto border shadow">
+      {/* 背景キャンバス */}
       <canvas
         ref={canvasRef}
-        className="absolute top-0 left-0 w-full h-full"
+        width={800}  // 画像の実際の幅に合わせる
+        height={1131} // 画像の実際の高さに合わせる
+        className="absolute top-0 left-0"
       ></canvas>
 
-      {/* 署名パッド */}
+      {/* サインキャンバス */}
       <SignaturePad
         ref={sigCanvas}
         canvasProps={{
-          className: "absolute top-0 left-0 w-full h-full bg-transparent",
+          width: 800,
+          height: 1131,
+          className: "absolute top-0 left-0 bg-transparent",
         }}
       />
 
-      {/* 入力フォーム */}
-      <div className="absolute top-0 left-0 w-full h-full p-4">
+      {/* 入力UIと操作 */}
+      <div className="absolute top-0 left-0 p-4 w-full">
         <select
-          className="border p-1 w-full mb-4"
+          className="border p-1 mb-2 w-full"
           value={reasonCode}
           onChange={(e) => setReasonCode(e.target.value)}
         >
-          <option value="">選択してください</option>
+          <option value="">選択してください（理由コード）</option>
           {items.map((item) => (
             <option key={item.code} value={item.code}>
               {item.code} - {item.reason}
@@ -67,11 +74,11 @@ export function ReportForm2() {
         </select>
 
         <select
-          className="border p-1 w-full mb-4"
+          className="border p-1 mb-4 w-full"
           value={workCode}
           onChange={(e) => setWorkCode(e.target.value)}
         >
-          <option value="">選択してください</option>
+          <option value="">選択してください（作業コード）</option>
           <option value="A">再販使用品・通常使用品</option>
           <option value="B">再販使用品・初期不良</option>
           <option value="D">再販使用品・部品レベル</option>
@@ -80,7 +87,7 @@ export function ReportForm2() {
 
         <button
           onClick={clearSignature}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+          className="bg-red-500 text-white px-4 py-2 rounded"
         >
           署名をクリア
         </button>
