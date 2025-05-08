@@ -1,96 +1,113 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import SignaturePad from "react-signature-canvas";
 
-export function ReportForm2() {
-  const sigCanvas = useRef<SignaturePad | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [reasonCode, setReasonCode] = useState("");
-  const [workCode, setWorkCode] = useState("");
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-      img.src = "/working_report2.png"; // publicフォルダ内に配置すること
-      img.onload = () => {
-        // キャンバスサイズを画像に合わせて設定
-        canvas.width = img.width;
-        canvas.height = img.height;
-
-        ctx?.drawImage(img, 0, 0);
-      };
-    }
-  }, []);
+export function ReportForm1() {
+  const sigPadRef = useRef<SignaturePad>(null);
 
   const clearSignature = () => {
-    sigCanvas.current?.clear();
+    sigPadRef.current?.clear();
   };
 
-//   const items = [
-//     { code: "A01", reason: "清掃不足（パウダー）" },
-//     { code: "A02", reason: "清掃不足（ミルク）" },
-//     { code: "A03", reason: "清掃不足（FS）" },
-//     { code: "B01", reason: "初期不良（設置1ヶ月未満）" },
-//     { code: "C01", reason: "経年劣化" },
-//     { code: "D01", reason: "定期点検・改造・撤去・交換など" },
-//   ];
-
   return (
-    <div className="relative max-w-4xl mx-auto border shadow">
-      {/* 背景キャンバス */}
-      <canvas
-        ref={canvasRef}
-        width={800}  // 画像の実際の幅に合わせる
-        height={1131} // 画像の実際の高さに合わせる
-        className="absolute top-0 left-0"
-      ></canvas>
+    <div className="relative w-full min-h-screen bg-[#b0e0e6] p-4">
+      {/* 作業報告書レイアウト */}
+      <div className="bg-white mx-auto max-w-3xl p-6 shadow-md" id="report-content">
+        <h1 className="text-center text-xl font-bold mb-6">作業報告書 (店舗控え)</h1>
 
-      {/* サインキャンバス */}
-      <SignaturePad
-        ref={sigCanvas}
-        canvasProps={{
-          width: 800,
-          height: 1131,
-          className: "absolute top-0 left-0 bg-transparent",
-        }}
-      />
+        {/* 各セクション */}
+        <div className="mb-4">
+          <div className="font-bold bg-gray-100 p-2">受付番号</div>
+          <table className="w-full border-collapse mt-2">
+            <tbody>
+              <tr>
+                <th className="border p-2 bg-gray-300">店舗名</th>
+                <td className="border p-2" colSpan={3}>Flair / Evolution / Sinphonia</td>
+              </tr>
+              <tr>
+                <th className="border p-2 bg-gray-300">作業実施日</th>
+                <td className="border p-2">20 年 月 日</td>
+                <th className="border p-2 bg-gray-300">日時区分</th>
+                <td className="border p-2">平日・土日祝日</td>
+              </tr>
+              <tr>
+                <th className="border p-2 bg-gray-300">出動件数</th>
+                <td className="border p-2">件</td>
+                <th className="border p-2 bg-gray-300">ポイント数</th>
+                <td className="border p-2">点</td>
+              </tr>
+              <tr>
+                <th className="border p-2 bg-gray-300">機種名</th>
+                <td className="border p-2" colSpan={3}>Spectra / Purat / FM850</td>
+              </tr>
+              <tr>
+                <th className="border p-2 bg-gray-300">オプション</th>
+                <td className="border p-2" colSpan={3}>冷蔵庫 / 冷凍庫 / 氷</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      {/* 入力UIと操作 */}
-      <div className="absolute top-0 left-0 p-4 w-full">
-        {/* <select
-          className="border p-1 mb-2 w-full"
-          value={reasonCode}
-          onChange={(e) => setReasonCode(e.target.value)}
-        >
-          <option value="">選択してください（理由コード）</option>
-          {items.map((item) => (
-            <option key={item.code} value={item.code}>
-              {item.code} - {item.reason}
-            </option>
-          ))}
-        </select>
+        {/* 故障コード */}
+        <div className="mb-4">
+          <div className="font-bold bg-gray-100 p-2">故障コード</div>
+          <table className="w-full border-collapse mt-2">
+            <tbody>
+              <tr>
+                <th className="border p-2 bg-gray-300">故障コード</th>
+                <td className="border p-2"></td>
+              </tr>
+              <tr>
+                <th className="border p-2 bg-gray-300">詳細</th>
+                <td className="border p-2"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <select
-          className="border p-1 mb-4 w-full"
-          value={workCode}
-          onChange={(e) => setWorkCode(e.target.value)}
-        >
-          <option value="">選択してください（作業コード）</option>
-          <option value="A">再販使用品・通常使用品</option>
-          <option value="B">再販使用品・初期不良</option>
-          <option value="D">再販使用品・部品レベル</option>
-          <option value="X">法定廃品</option>
-        </select> */}
+        {/* 動作点検 */}
+        <div className="mb-4">
+          <div className="font-bold bg-gray-100 p-2">動作点検</div>
+          <table className="w-full border-collapse mt-2">
+            <tbody>
+              <tr>
+                <td className="border p-2"><div className="inline-block w-5 h-5 border border-black mr-2"></div>抽出ライン</td>
+                <td className="border p-2"><div className="inline-block w-5 h-5 border border-black mr-2"></div>ミルクライン</td>
+                <td className="border p-2"><div className="inline-block w-5 h-5 border border-black mr-2"></div>抽出ユニット</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <button
-          onClick={clearSignature}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          署名をクリア
-        </button>
+        {/* 署名エリア */}
+        <div className="mb-4">
+          <div className="font-bold bg-gray-100 p-2">署名</div>
+          <div className="border mt-2">
+            <SignaturePad
+              ref={sigPadRef}
+              canvasProps={{
+                width: 600,
+                height: 200,
+                style: {
+                  border: "1px solid #ccc",
+                  width: "100%",
+                  touchAction: "none",
+                },
+              }}
+            />
+          </div>
+        </div>
+
+        {/* 操作ボタン */}
+        <div className="mb-4">
+          <button
+            onClick={clearSignature}
+            className="w-full bg-red-600 text-white py-2 rounded"
+          >
+            署名をクリア
+          </button>
+        </div>
       </div>
     </div>
   );
