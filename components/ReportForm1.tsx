@@ -13,7 +13,7 @@ export function ReportForm1() {
     if (canvas) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = "/working_report1.png"; // public フォルダ内に置く
+      img.src = "/working_report1.png";
       img.onload = () => {
         canvas.width = img.width;
         canvas.height = img.height;
@@ -28,12 +28,7 @@ export function ReportForm1() {
 
   return (
     <div className="w-full h-screen overflow-hidden bg-gray-100">
-      <TransformWrapper
-        doubleClick={{ disabled: true }}
-        pinch={{ disabled: false }}
-        panning={{ disabled: false }}
-        wheel={{ disabled: true }}
-      >
+      <TransformWrapper>
         <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
           <div
             className="relative mx-auto"
@@ -41,10 +36,9 @@ export function ReportForm1() {
               width: "100%",
               maxWidth: 800,
               aspectRatio: "800 / 1131",
-              touchAction: "manipulation",
+              minHeight: "400px", // 重要
             }}
           >
-            {/* 背景キャンバス */}
             <canvas
               ref={canvasRef}
               style={{
@@ -57,7 +51,6 @@ export function ReportForm1() {
               }}
             />
 
-            {/* 署名キャンバス */}
             <SignaturePad
               ref={sigCanvas}
               canvasProps={{
@@ -76,7 +69,6 @@ export function ReportForm1() {
         </TransformComponent>
       </TransformWrapper>
 
-      {/* 操作UI */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-md z-50">
         <button
           onClick={clearSignature}
