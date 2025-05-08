@@ -6,20 +6,17 @@ import SignaturePad from "react-signature-canvas";
 export function ReportForm1() {
   const sigCanvas = useRef<SignaturePad | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [reasonCode, setReasonCode] = useState("");
-  const [workCode, setWorkCode] = useState("");
+  const [scale, setScale] = useState(1); // 拡大縮小のスケール状態
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = "/working_report1.png"; // publicフォルダ内に配置すること
+      img.src = "/working_report1.png"; // 背景画像のパス
       img.onload = () => {
-        // キャンバスサイズを画像に合わせて設定
         canvas.width = img.width;
         canvas.height = img.height;
-
         ctx?.drawImage(img, 0, 0);
       };
     }
@@ -29,22 +26,25 @@ export function ReportForm1() {
     sigCanvas.current?.clear();
   };
 
-//   const items = [
-//     { code: "A01", reason: "清掃不足（パウダー）" },
-//     { code: "A02", reason: "清掃不足（ミルク）" },
-//     { code: "A03", reason: "清掃不足（FS）" },
-//     { code: "B01", reason: "初期不良（設置1ヶ月未満）" },
-//     { code: "C01", reason: "経年劣化" },
-//     { code: "D01", reason: "定期点検・改造・撤去・交換など" },
-//   ];
+  const handlePinchZoom = (event: React.WheelEvent<HTMLDivElement>) => {
+    const newScale = Math.min(Math.max(scale + event.deltaY * -0.01, 0.5), 3); // 拡大縮小範囲0.5〜3
+    setScale(newScale);
+  };
 
   return (
-    <div className="relative max-w-4xl mx-auto border shadow">
+    <div
+      className="relative max-w-full overflow-auto border shadow"
+      onWheel={handlePinchZoom} // 拡大縮小イベントをキャッチ
+      style={{
+        transform: `scale(${scale})`, // 現在のスケールを適用
+        transformOrigin: "center center", // 拡大の中心
+      }}
+    >
       {/* 背景キャンバス */}
       <canvas
         ref={canvasRef}
-        width={800}  // 画像の実際の幅に合わせる
-        height={1131} // 画像の実際の高さに合わせる
+        width={800}
+        height={1131}
         className="absolute top-0 left-0"
       ></canvas>
 
@@ -58,33 +58,8 @@ export function ReportForm1() {
         }}
       />
 
-      {/* 入力UIと操作 */}
-      <div className="absolute top-0 left-0 p-4 w-full">
-        {/* <select
-          className="border p-1 mb-2 w-full"
-          value={reasonCode}
-          onChange={(e) => setReasonCode(e.target.value)}
-        >
-          <option value="">選択してください（理由コード）</option>
-          {items.map((item) => (
-            <option key={item.code} value={item.code}>
-              {item.code} - {item.reason}
-            </option>
-          ))}
-        </select>
-
-        <select
-          className="border p-1 mb-4 w-full"
-          value={workCode}
-          onChange={(e) => setWorkCode(e.target.value)}
-        >
-          <option value="">選択してください（作業コード）</option>
-          <option value="A">再販使用品・通常使用品</option>
-          <option value="B">再販使用品・初期不良</option>
-          <option value="D">再販使用品・部品レベル</option>
-          <option value="X">法定廃品</option>
-        </select> */}
-
+      {/* 操作ボタン */}
+      <div className="absolute bottom-4 left-4">
         <button
           onClick={clearSignature}
           className="bg-red-500 text-white px-4 py-2 rounded"
