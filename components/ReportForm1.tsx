@@ -1,19 +1,18 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import SignaturePad from "react-signature-canvas";
 
 export function ReportForm1() {
   const sigCanvas = useRef<SignaturePad | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [scale, setScale] = useState(1); // 拡大縮小のスケール状態
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = "/working_report1.png"; // 背景画像のパス
+      img.src = "/working_report1.png";
       img.onload = () => {
         canvas.width = img.width;
         canvas.height = img.height;
@@ -26,46 +25,63 @@ export function ReportForm1() {
     sigCanvas.current?.clear();
   };
 
-  const handlePinchZoom = (event: React.WheelEvent<HTMLDivElement>) => {
-    const newScale = Math.min(Math.max(scale + event.deltaY * -0.01, 0.5), 3); // 拡大縮小範囲0.5〜3
-    setScale(newScale);
-  };
-
   return (
-    <div
-      className="relative max-w-full overflow-auto border shadow"
-      onWheel={handlePinchZoom} // 拡大縮小イベントをキャッチ
-      style={{
-        transform: `scale(${scale})`, // 現在のスケールを適用
-        transformOrigin: "center center", // 拡大の中心
-      }}
-    >
-      {/* 背景キャンバス */}
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={1131}
-        className="absolute top-0 left-0"
-      ></canvas>
-
-      {/* サインキャンバス */}
-      <SignaturePad
-        ref={sigCanvas}
-        canvasProps={{
-          width: 800,
-          height: 1131,
-          className: "absolute top-0 left-0 bg-transparent",
+    <div className="w-full h-screen overflow-auto touch-manipulation">
+      <div
+        className="relative mx-auto border shadow"
+        style={{
+          width: "100%",
+          maxWidth: 800,
+          touchAction: "none", // SignaturePadがタッチイベントを独占しないように調整
         }}
-      />
-
-      {/* 操作ボタン */}
-      <div className="absolute bottom-4 left-4">
-        <button
-          onClick={clearSignature}
-          className="bg-red-500 text-white px-4 py-2 rounded"
+      >
+        {/* ズーム可能なラッパー */}
+        <div
+          className="relative"
+          style={{
+            width: "100%",
+            aspectRatio: "800 / 1131",
+            overflow: "hidden",
+          }}
         >
-          署名をクリア
-        </button>
+          {/* 背景キャンバス */}
+          <canvas
+            ref={canvasRef}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 0,
+            }}
+          ></canvas>
+
+          {/* サインキャンバス */}
+          <SignaturePad
+            ref={sigCanvas}
+            canvasProps={{
+              style: {
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+              },
+            }}
+          />
+        </div>
+
+        {/* 操作UI */}
+        <div className="p-4 bg-white z-10 relative">
+          <button
+            onClick={clearSignature}
+            className="bg-red-500 text-white px-4 py-2 rounded w-full"
+          >
+            署名をクリア
+          </button>
+        </div>
       </div>
     </div>
   );
