@@ -14,82 +14,103 @@ export function ReportForm2() {
     <div className="container max-w-screen-lg mx-auto bg-white p-6 border shadow-md">
       <h1 className="text-center text-2xl font-bold mb-6">統合作業報告書</h1>
 
-      {/* 受付番号と作業内容セクション */}
-      <div className="section mb-10">
-        <h2 className="section-title text-xl font-semibold mb-4">受付番号と作業内容</h2>
-        <table className="w-full border-collapse mb-6">
-          <tbody>
-            <tr>
-              <th className="border p-2 bg-gray-100">受付番号</th>
-              <td className="border p-2"></td>
-            </tr>
-            <tr>
-              <th className="border p-2 bg-gray-100">作業実施日</th>
-              <td className="border p-2">20__年__月__日</td>
-            </tr>
-            <tr>
-              <th className="border p-2 bg-gray-100">機種名</th>
-              <td className="border p-2">Flair / Evolution / Sinfonia / Spectra</td>
-            </tr>
-            <tr>
-              <th className="border p-2 bg-gray-100">故障コード</th>
-              <td className="border p-2"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* 動作点検セクション */}
-      <div className="section mb-10">
-        <h2 className="section-title text-xl font-semibold mb-4">動作点検</h2>
-        <div className="checkbox-container flex gap-4 mb-6">
-          <div className="checkbox-item flex items-center">
-            <input type="checkbox" id="extraction" className="mr-2" />
-            <label htmlFor="extraction">抽出ライン</label>
-          </div>
-          <div className="checkbox-item flex items-center">
-            <input type="checkbox" id="milkline" className="mr-2" />
-            <label htmlFor="milkline">ミルクライン</label>
-          </div>
-          <div className="checkbox-item flex items-center">
-            <input type="checkbox" id="extractionUnit" className="mr-2" />
-            <label htmlFor="extractionUnit">抽出ユニット</label>
-          </div>
-          <div className="checkbox-item flex items-center">
-            <input type="checkbox" id="boilerPressure" className="mr-2" />
-            <label htmlFor="boilerPressure">ボイラー圧</label>
-          </div>
-        </div>
-      </div>
-
-      {/* 修理結果セクション */}
-      <div className="section mb-10">
-        <h2 className="section-title text-xl font-semibold mb-4">修理結果</h2>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border p-2 bg-gray-100">No</th>
-              <th className="border p-2 bg-gray-100">部品番号</th>
-              <th className="border p-2 bg-gray-100">部品名称</th>
-              <th className="border p-2 bg-gray-100">数量</th>
-              <th className="border p-2 bg-gray-100">部品コードⅠ</th>
-              <th className="border p-2 bg-gray-100">部品コードⅡ</th>
-              <th className="border p-2 bg-gray-100">備考</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border p-2">1</td>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {/* Displaying the HTML content in JSX format */}
+      <div dangerouslySetInnerHTML={{
+        __html: `
+        <!DOCTYPE html>
+        <html lang="ja">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>作業報告書 (店舗控え)</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    background-color: #f7f7f7;
+                }
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    background: #fff;
+                    padding: 20px;
+                    border: 1px solid #ccc;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+                h1 {
+                    text-align: center;
+                    font-size: 24px;
+                    margin-bottom: 20px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                th, td {
+                    border: 1px solid #ccc;
+                    padding: 10px;
+                    text-align: left;
+                }
+                th {
+                    background: #f0f0f0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>作業報告書 (店舗控え)</h1>
+                <table>
+                    <tr>
+                        <th>受付番号</th>
+                        <td colspan="3"></td>
+                        <th>作業実施日</th>
+                        <td>20__年__月__日</td>
+                        <th>日付区分</th>
+                        <td>平日・土日祝日</td>
+                    </tr>
+                    <tr>
+                        <th>店舗名</th>
+                        <td colspan="3"></td>
+                        <th>作業時間</th>
+                        <td>～</td>
+                        <th>時間区分</th>
+                        <td>早朝・夜間・深夜</td>
+                    </tr>
+                    <tr>
+                        <th>機種名</th>
+                        <td colspan="3">Flair/Evolution/Sinphoniaなど</td>
+                        <th>出荷年月</th>
+                        <td>20__年__月__日</td>
+                        <th>シリアルNo.</th>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>保証開始日</th>
+                        <td>20__年__月__日</td>
+                        <th>保証終了日</th>
+                        <td>20__年__月__日</td>
+                        <th colspan="4"></th>
+                    </tr>
+                </table>
+        
+                <h2>作業内容</h2>
+                <table>
+                    <tr>
+                        <td>修理</td>
+                        <td>定期点検</td>
+                        <td>設置</td>
+                        <td>撤去</td>
+                        <td>消耗品</td>
+                        <td>その他</td>
+                    </tr>
+                </table>
+            </div>
+        </body>
+        </html>
+        `
+      }} />
 
       {/* 署名と連絡先セクション */}
       <div className="section mb-10">
