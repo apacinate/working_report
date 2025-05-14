@@ -21,7 +21,7 @@ export function ReportForm2() {
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF();
-      pdf.addImage(imgData, "PNG", 0, 0);
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
       pdf.save("report.pdf");
     });
   };
