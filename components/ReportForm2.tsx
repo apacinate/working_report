@@ -2,6 +2,8 @@
 
 import { useState, useRef } from "react";
 import SignaturePad from "react-signature-canvas";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export function ReportForm2() {
   const [currentPage, setCurrentPage] = useState<"report" | "signature">("report");
@@ -12,6 +14,16 @@ export function ReportForm2() {
 
   const clearSignature = (ref: React.MutableRefObject<SignaturePad | null>) => {
     ref.current?.clear();
+  };
+
+  const generatePDF = () => {
+    const input = document.body; // Entire document capture
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "PNG", 0, 0);
+      pdf.save("report.pdf");
+    });
   };
 
   return (
@@ -43,7 +55,6 @@ export function ReportForm2() {
                 style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
               />
             </div>
-            {/* Add more fields based on your needs */}
           </form>
 
           <button
@@ -51,6 +62,13 @@ export function ReportForm2() {
             style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
           >
             次のページへ
+          </button>
+
+          <button
+            onClick={generatePDF}
+            style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#2196F3", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+          >
+            PDFを出力
           </button>
         </>
       ) : (
