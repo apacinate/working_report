@@ -17,35 +17,28 @@ export function ReportForm2() {
   };
 
   const generatePDF = async () => {
-    const pdf = new jsPDF("p", "mm", "a4"); // A4-sized PDF
+    const pdf = new jsPDF();
     const reportPage = document.getElementById("report-page");
     const signaturePage = document.getElementById("signature-page");
 
     if (reportPage && signaturePage) {
-      try {
-        // Convert Report Page to Canvas
-        const reportCanvas = await html2canvas(reportPage, { scale: 2, useCORS: true });
- // Higher scale for better quality
-        const reportImgData = reportCanvas.toDataURL("image/png");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        pdf.addImage(reportImgData, "PNG", 0, 0, pageWidth, pageHeight);
+      // Convert report page to canvas and add to PDF
+      const reportCanvas = await html2canvas(reportPage);
+      const reportImgData = reportCanvas.toDataURL("image/png");
+      pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297); // A4 size: width=210mm, height=297mm
 
-        // Add New Page for Signature Page
-        pdf.addPage();
+      // Add new page
+      pdf.addPage();
 
-        // Convert Signature Page to Canvas
-        const signatureCanvas = await html2canvas(signaturePage, { scale: 2 });
-        const signatureImgData = signatureCanvas.toDataURL("image/png");
-        pdf.addImage(signatureImgData, "PNG", 0, 0, pageWidth, pageHeight);
+      // Convert signature page to canvas and add to PDF
+      const signatureCanvas = await html2canvas(signaturePage);
+      const signatureImgData = signatureCanvas.toDataURL("image/png");
+      pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297); // A4 size
 
-        // Save PDF
-        pdf.save("report_document.pdf");
-      } catch (error) {
-        console.error("Error generating PDF:", error);
-      }
+      // Save PDF
+      pdf.save("document.pdf");
     } else {
-      console.error("Report or Signature page element not found.");
+      console.error("ページの要素が見つかりません");
     }
   };
 
