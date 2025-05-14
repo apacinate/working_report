@@ -24,7 +24,8 @@ export function ReportForm2() {
     if (reportPage && signaturePage) {
       try {
         // Convert Report Page to Canvas
-        const reportCanvas = await html2canvas(reportPage, { scale: 2 }); // Higher scale for better quality
+        const reportCanvas = await html2canvas(reportPage, { scale: 2, useCORS: true });
+ // Higher scale for better quality
         const reportImgData = reportCanvas.toDataURL("image/png");
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
