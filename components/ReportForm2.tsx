@@ -11,29 +11,32 @@ export function ReportForm2() {
   };
 
   return (
-    <div className="container max-w-screen-lg mx-auto bg-white p-6 border shadow-md">
-      <h1 className="text-center text-2xl font-bold mb-6">統合作業報告書</h1>
-
-      {/* 署名と連絡先セクション */}
-      <div className="section mb-10">
-        <h2 className="section-title text-xl font-semibold mb-4">お客様署名と連絡先</h2>
-        <div className="signature-box border border-black mb-4" style={{ height: "100px" }}>
-          <SignaturePad
-            ref={sigPadRef}
-            canvasProps={{
-              width: 600,
-              height: 100,
-              style: { border: "none", width: "100%" },
-            }}
-          />
+    <div>
+      <h1>記録フォーム</h1>
+      <form>
+        <div className="form-section">
+          <label htmlFor="worker">作業担当者:</label>
+          <input type="text" id="worker" name="worker" placeholder="担当者名を記入" />
         </div>
-        <p>連絡先: 三井倉庫ロジスティクス株式会社</p>
-        <p>TEL: 0120-12-7661 FAX: 048-442-3921</p>
-      </div>
 
-      <div className="footer text-center text-sm text-gray-500 mt-10">
-        <p>2018年10月版 作業担当者 管理会社名</p>
-      </div>
+        <div className="form-section">
+          <label htmlFor="repair-company">修理会社:</label>
+          <input type="text" id="repair-company" name="repair-company" placeholder="修理会社名を記入" />
+        </div>
+
+        <div className="form-section">
+          <label htmlFor="management-company">管理会社名:</label>
+          <input type="text" id="management-company" name="management-company" placeholder="管理会社名を記入" />
+        </div>
+
+        <div className="form-section">
+          <label htmlFor="signature">署名:</label>
+          <SignaturePad ref={sigPadRef} />
+          <button type="button" onClick={clearSignature}>クリア</button>
+        </div>
+
+        <button type="submit">送信</button>
+      </form>
     </div>
   );
 }
