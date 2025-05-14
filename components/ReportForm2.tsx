@@ -17,28 +17,34 @@ export function ReportForm2() {
   };
 
   const generatePDF = async () => {
-    const pdf = new jsPDF();
+    const pdf = new jsPDF("p", "mm", "a4"); // A4-sized PDF
     const reportPage = document.getElementById("report-page");
     const signaturePage = document.getElementById("signature-page");
 
     if (reportPage && signaturePage) {
-      // Convert report page to canvas and add to PDF
-      const reportCanvas = await html2canvas(reportPage);
-      const reportImgData = reportCanvas.toDataURL("image/png");
-      pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297); // A4 size: width=210mm, height=297mm
+      try {
+        // Convert Report Page to Canvas
+        const reportCanvas = await html2canvas(reportPage, { scale: 2 }); // Higher scale for better quality
+        const reportImgData = reportCanvas.toDataURL("image/png");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(reportImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
-      // Add new page
-      pdf.addPage();
+        // Add New Page for Signature Page
+        pdf.addPage();
 
-      // Convert signature page to canvas and add to PDF
-      const signatureCanvas = await html2canvas(signaturePage);
-      const signatureImgData = signatureCanvas.toDataURL("image/png");
-      pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297); // A4 size
+        // Convert Signature Page to Canvas
+        const signatureCanvas = await html2canvas(signaturePage, { scale: 2 });
+        const signatureImgData = signatureCanvas.toDataURL("image/png");
+        pdf.addImage(signatureImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
-      // Save PDF
-      pdf.save("document.pdf");
+        // Save PDF
+        pdf.save("report_document.pdf");
+      } catch (error) {
+        console.error("Error generating PDF:", error);
+      }
     } else {
-      console.error("ページの要素が見つかりません");
+      console.error("Report or Signature page element not found.");
     }
   };
 
