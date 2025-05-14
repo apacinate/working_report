@@ -65,6 +65,25 @@ export function ReportForm2() {
           送信
         </button>
       </form>
+
+      <div style={{ marginTop: "30px", border: "2px solid #ccc", padding: "20px", borderRadius: "10px" }}>
+        <h2 style={{ textAlign: "center" }}>作業報告書ページ</h2>
+        <form>
+          <div className="form-section" style={{ marginBottom: "10px" }}>
+            <label>受付番号:</label>
+            <input type="text" placeholder="受付番号を入力" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
+          </div>
+          <div className="form-section" style={{ marginBottom: "10px" }}>
+            <label>店舗名:</label>
+            <input type="text" placeholder="店舗名を入力" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
+          </div>
+          <div className="form-section" style={{ marginBottom: "10px" }}>
+            <label>作業実施日:</label>
+            <input type="date" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
+          </div>
+          {/* Add more fields based on the report form */}
+        </form>
+      </div>
     </div>
   );
 }
