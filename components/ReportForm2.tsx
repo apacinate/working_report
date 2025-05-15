@@ -50,7 +50,7 @@ export function ReportForm2() {
       const signatureCanvas = await html2canvas(signaturePage, {
         scrollY: -window.scrollY,
         useCORS: true,
-        scale: 2,
+        scale: 1,
       });
       const signatureImgData = signatureCanvas.toDataURL("image/png");
       pdf.addPage();
@@ -89,7 +89,12 @@ export function ReportForm2() {
         <h1 style={{ textAlign: "center" }}>作業報告書ページ</h1>
         <form>
           <div className="form-section" style={{ marginBottom: "10px" }}>
-            <label>受付番号:</label>
+            <label 
+              style={{
+                display: "block",
+                marginBottom: "6px" // ← この値を調整して余白をつける
+              }}>受付番号:
+            </label>
             <input
               type="text"
               placeholder="受付番号を入力"
@@ -100,7 +105,12 @@ export function ReportForm2() {
             />
           </div>
           <div className="form-section" style={{ marginBottom: "10px" }}>
-            <label>店舗名:</label>
+            <label 
+              style={{
+                display: "block",
+                marginBottom: "6px" // ← この値を調整して余白をつける
+              }}>店舗名:
+            </label>
             <input
               type="text"
               placeholder="店舗名を入力"
@@ -111,7 +121,11 @@ export function ReportForm2() {
             />
           </div>
           <div className="form-section" style={{ marginBottom: "10px" }}>
-            <label>作業実施日:</label>
+            <label style={{
+                display: "block",
+                marginBottom: "6px" // ← この値を調整して余白をつける
+              }}>作業実施日:
+            </label>
             <input
               type="date"
               style={{
