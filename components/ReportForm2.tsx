@@ -19,41 +19,49 @@ export function ReportForm2() {
   const generatePDF = async () => {
     const pdf = new jsPDF("p", "mm", "a4");
   
-    const hiddenElems = document.querySelectorAll(".no-print");
-    hiddenElems.forEach(el => (el as HTMLElement).style.display = "none");
+    const reportPage = document.getElementById("report-page");
+    const signaturePage = document.getElementById("signature-page");
   
-    const renderAndAddPage = async (id: string) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+    if (reportPage && signaturePage) {
+      // --- 1ページ目: 報告ページ ---
+      setCurrentPage("report");
+      await new Promise((res) => setTimeout(res, 200));
   
-      const canvas = await html2canvas(el, {
-        scale: 2,
+      const reportCanvas = await html2canvas(reportPage, {
+        scrollY: -window.scrollY,
         useCORS: true,
+        scale: 2,
       });
+      const reportImgData = reportCanvas.toDataURL("image/png");
+      pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297);
   
-      const imgData = canvas.toDataURL("image/png");
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      // --- 2ページ目: 署名ページ（強制表示＆高さ調整） ---
+      setCurrentPage("signature");
+      await new Promise((res) => setTimeout(res, 200));
   
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    };
+      // 高さ調整
+      signaturePage.style.height = "auto";
+      signaturePage.style.minHeight = "297mm"; // A4の高さに最低合わせる
+      signaturePage.style.overflow = "visible";
   
-    // 1ページ目
-    setCurrentPage("report");
-    await new Promise((res) => setTimeout(res, 500)); // 時間を少し長めに待つ
-    await renderAndAddPage("report-page");
+      const signatureCanvas = await html2canvas(signaturePage, {
+        scrollY: -window.scrollY,
+        useCORS: true,
+        scale: 2,
+      });
+      const signatureImgData = signatureCanvas.toDataURL("image/png");
+      pdf.addPage();
+      pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297);
   
-    // 2ページ目
-    setCurrentPage("signature");
-    await new Promise((res) => setTimeout(res, 500)); // 同様に待機
-    await renderAndAddPage("signature-page");
+      pdf.save("document.pdf");
   
-    hiddenElems.forEach(el => (el as HTMLElement).style.display = "");
-  
-    pdf.save("document.pdf");
-    setCurrentPage("report");
+      // 戻す
+      setCurrentPage("report");
+    } else {
+      console.error("ページの要素が見つかりません");
+    }
   };
+  
   
 
   const getPageStyle = (page: "report" | "signature"): React.CSSProperties => ({
@@ -129,24 +137,23 @@ export function ReportForm2() {
                 border: "1px solid #ccc", borderRadius: "5px", padding: "10px"
               }}>
                <SignaturePad
-                  ref={sig.ref}
-                  canvasProps={{
-                    width: 550,
-                    height: 150,
-                    style: {
-                      width: "100%",
-                      height: "150px",
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                      touchAction: "none", // スクロール防止
-                    },
-                  }}
-                />
+                ref={sig.ref}
+                canvasProps={{
+                  width: 550,
+                  height: 150,
+                  style: {
+                    width: "100%",
+                    height: "150px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    touchAction: "none", // スクロール防止
+                  },
+                }}
+              />
 
               </div>
               <button
                 type="button"
-                className="no-print"
                 onClick={() => clearSignature(sig.ref)}
                 style={{
                   marginTop: "10px", padding: "10px 20px",
