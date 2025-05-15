@@ -19,7 +19,7 @@ export function ReportForm2() {
 
   const addPage = (currentIndex: number) => {
     const newPages = [...pages];
-    newPages.splice(currentIndex + 1, 0, `inserted-${Date.now()}`); // Unique ID for the inserted page
+    newPages.splice(currentIndex + 1, 0, `inserted-${Date.now()}`); // Unique ID for each inserted page
     setPages(newPages);
   };
 
@@ -28,28 +28,24 @@ export function ReportForm2() {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    // Make all pages visible temporarily for capturing
-    const allPages = document.querySelectorAll(".page");
-    allPages.forEach((page) => {
-      (page as HTMLElement).style.display = "block";
-    });
+    try {
+      for (let i = 0; i < pages.length; i++) {
+        setCurrentPageIndex(i);
+        await new Promise((resolve) => setTimeout(resolve, 300)); // Wait for page to render
 
-    for (let i = 0; i < pages.length; i++) {
-      const pageElement = document.getElementById(`${pages[i]}-page`);
-      if (pageElement) {
-        const canvas = await html2canvas(pageElement, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+        const pageElement = document.getElementById(`${pages[i]}-page`);
+        if (pageElement) {
+          const canvas = await html2canvas(pageElement, { scale: 2 });
+          const imgData = canvas.toDataURL("image/png");
+          if (i > 0) pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+        }
       }
+
+      pdf.save("report_document.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
     }
-
-    // Restore visibility of the current page
-    allPages.forEach((page, index) => {
-      (page as HTMLElement).style.display = index === currentPageIndex ? "block" : "none";
-    });
-
-    pdf.save("report_document.pdf");
   };
 
   return (
@@ -59,44 +55,33 @@ export function ReportForm2() {
 
         if (page === "report") {
           return (
-            <div id="report-page" className="page" key={index} style={{ display: "block" }}>
+            <div id="report-page" key={index}>
               <h1 style={{ textAlign: "center" }}>作業報告書ページ</h1>
               <form>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
                   <label>受付番号:</label>
-                  <input
-                    type="text"
-                    placeholder="受付番号を入力"
-                    style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
-                  />
+                  <input type="text" placeholder="受付番号を入力" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
                 </div>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
                   <label>店舗名:</label>
-                  <input
-                    type="text"
-                    placeholder="店舗名を入力"
-                    style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
-                  />
+                  <input type="text" placeholder="店舗名を入力" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
                 </div>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
                   <label>作業実施日:</label>
-                  <input
-                    type="date"
-                    style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
-                  />
+                  <input type="date" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
                 </div>
               </form>
               <button
                 type="button"
                 onClick={() => addPage(index)}
-                style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+                style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
               >
                 + ページを挿入
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentPageIndex(index + 1)}
-                style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+                style={{ marginTop: "10px", padding: "10px 20px", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
               >
                 次のページへ
               </button>
@@ -106,90 +91,44 @@ export function ReportForm2() {
 
         if (page.startsWith("inserted")) {
           return (
-            <div id={`${page}-page`} className="page" key={index} style={{ display: "block" }}>
+            <div id={`${page}-page`} key={index}>
               <h1 style={{ textAlign: "center" }}>挿入されたページ</h1>
               <form>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
                   <label>受付番号:</label>
-                  <input
-                    type="text"
-                    placeholder="受付番号を入力"
-                    style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
-                  />
+                  <input type="text" placeholder="受付番号を入力" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
                 </div>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
                   <label>店舗名:</label>
-                  <input
-                    type="text"
-                    placeholder="店舗名を入力"
-                    style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
-                  />
+                  <input type="text" placeholder="店舗名を入力" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
                 </div>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
                   <label>作業実施時間:</label>
-                  <input
-                    type="time"
-                    style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
-                  />
+                  <input type="time" style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
                 </div>
               </form>
               <button
                 type="button"
                 onClick={() => addPage(index)}
-                style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+                style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
               >
                 + ページを挿入
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentPageIndex(index + 1)}
-                style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+                style={{ marginTop: "10px", padding: "10px 20px", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
               >
                 次のページへ
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentPageIndex(index - 1)}
-                style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+                style={{ marginTop: "10px", padding: "10px 20px", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
               >
                 戻る
               </button>
-            </div>
-          );
-        }
-
-        if (page === "signature") {
-          return (
-            <div id="signature-page" className="page" key={index} style={{ display: "block" }}>
-              <h1 style={{ textAlign: "center" }}>署名ページ</h1>
-              <form>
-                <div className="form-section" style={{ marginBottom: "20px" }}>
-                  <label htmlFor="worker">作業担当者 (サイン):</label>
-                  <div style={{ border: "1px solid #ccc", borderRadius: "5px", width: "100%", height: "150px" }}>
-                    <SignaturePad
-                      ref={workerSigPadRef}
-                      canvasProps={{
-                        style: { width: "100%", height: "100%" },
-                      }}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => clearSignature(workerSigPadRef)}
-                    style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
-                  >
-                    クリア
-                  </button>
-                </div>
-              </form>
-              <button
-                type="button"
-                onClick={() => setCurrentPageIndex(index - 1)}
-                style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
-              >
-                戻る
-              </button>
-            </div>
+              </div>
           );
         }
 
@@ -198,7 +137,7 @@ export function ReportForm2() {
 
       <button
         onClick={generatePDF}
-        style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#2196F3", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+        style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#2196F3", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
       >
         PDFを出力
       </button>
