@@ -139,11 +139,14 @@ export function ReportForm2() {
                <SignaturePad
                   ref={sig.ref}
                   canvasProps={{
+                    width: 550,
+                    height: 150,
                     style: {
-                      width: "550px",
+                      width: "100%",
                       height: "150px",
                       border: "1px solid #ccc",
                       borderRadius: "5px",
+                      touchAction: "none", // スクロール防止
                     },
                   }}
                 />
