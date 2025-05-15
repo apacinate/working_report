@@ -23,55 +23,41 @@ export function ReportForm2() {
     const signaturePage = document.getElementById("signature-page");
   
     if (reportPage && signaturePage) {
-      // --- クリアボタンを非表示 ---
+      // ボタン類を非表示
       const hiddenElems = document.querySelectorAll(".no-print");
-      hiddenElems.forEach((el) => {
-        (el as HTMLElement).style.display = "none";
-      });
+      hiddenElems.forEach(el => (el as HTMLElement).style.display = "none");
   
-      // --- 1ページ目: 報告ページ ---
+      const renderAndAddPage = async (element: HTMLElement) => {
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+        });
+        const imgData = canvas.toDataURL("image/png");
+  
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      };
+  
+      // ページ切り替えとレンダリング
       setCurrentPage("report");
       await new Promise((res) => setTimeout(res, 200));
+      await renderAndAddPage(reportPage);
   
-      const reportCanvas = await html2canvas(reportPage, {
-        scrollY: -window.scrollY,
-        useCORS: true,
-        scale: 2,
-      });
-      const reportImgData = reportCanvas.toDataURL("image/png");
-      pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297);
-  
-      // --- 2ページ目: 署名ページ ---
       setCurrentPage("signature");
       await new Promise((res) => setTimeout(res, 200));
+      await renderAndAddPage(signaturePage);
   
-      signaturePage.style.height = "auto";
-      signaturePage.style.minHeight = "297mm";
-      signaturePage.style.overflow = "visible";
-  
-      const signatureCanvas = await html2canvas(signaturePage, {
-        scrollY: -window.scrollY,
-        useCORS: true,
-        scale: 2,
-      });
-      const signatureImgData = signatureCanvas.toDataURL("image/png");
-      pdf.addPage();
-      pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297);
-  
-      // --- 非表示を元に戻す ---
-      hiddenElems.forEach((el) => {
-        (el as HTMLElement).style.display = "";
-      });
+      // ボタン類を戻す
+      hiddenElems.forEach(el => (el as HTMLElement).style.display = "");
   
       pdf.save("document.pdf");
-  
-      // 戻す
       setCurrentPage("report");
-    } else {
-      console.error("ページの要素が見つかりません");
     }
   };
-  
+
   
 
   const getPageStyle = (page: "report" | "signature"): React.CSSProperties => ({
