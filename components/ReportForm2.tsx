@@ -140,7 +140,7 @@ export function ReportForm2() {
                   ref={sig.ref}
                   canvasProps={{
                     style: {
-                      width: "100%",
+                      width: "500px",
                       height: "150px",
                       border: "1px solid #ccc",
                       borderRadius: "5px",
