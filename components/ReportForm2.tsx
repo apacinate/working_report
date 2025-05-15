@@ -164,6 +164,7 @@ export function ReportForm2() {
               </div>
               <button
                 type="button"
+                className="no-print"
                 onClick={() => clearSignature(sig.ref)}
                 style={{
                   marginTop: "10px", padding: "10px 20px",
@@ -206,7 +207,6 @@ export function ReportForm2() {
       ) : (
         <button
           onClick={() => setCurrentPage("report")}
-          className="no-print"
           style={{
             marginTop: "20px", padding: "10px 20px", border: "none",
             backgroundColor: "#f44336", color: "#fff",
