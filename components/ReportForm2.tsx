@@ -136,7 +136,18 @@ export function ReportForm2() {
               <div style={{
                 border: "1px solid #ccc", borderRadius: "5px", padding: "10px"
               }}>
-                <SignaturePad ref={sig.ref} />
+               <SignaturePad
+                  ref={sig.ref}
+                  canvasProps={{
+                    style: {
+                      width: "100%",
+                      height: "150px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                    },
+                  }}
+                />
+
               </div>
               <button
                 type="button"
