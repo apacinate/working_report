@@ -23,6 +23,10 @@ export function ReportForm2() {
     const signaturePage = document.getElementById("signature-page");
   
     if (reportPage && signaturePage) {
+      // --- 共通: 署名ボタンなどを一時非表示 ---
+      const hiddenElems = document.querySelectorAll(".no-print");
+      hiddenElems.forEach((el) => ((el as HTMLElement).style.display = "none"));
+  
       // --- 1ページ目: 報告ページ ---
       setCurrentPage("report");
       await new Promise((res) => setTimeout(res, 200));
@@ -35,13 +39,12 @@ export function ReportForm2() {
       const reportImgData = reportCanvas.toDataURL("image/png");
       pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297);
   
-      // --- 2ページ目: 署名ページ（強制表示＆高さ調整） ---
+      // --- 2ページ目: 署名ページ ---
       setCurrentPage("signature");
       await new Promise((res) => setTimeout(res, 200));
   
-      // 高さ調整
       signaturePage.style.height = "auto";
-      signaturePage.style.minHeight = "297mm"; // A4の高さに最低合わせる
+      signaturePage.style.minHeight = "297mm";
       signaturePage.style.overflow = "visible";
   
       const signatureCanvas = await html2canvas(signaturePage, {
@@ -53,14 +56,16 @@ export function ReportForm2() {
       pdf.addPage();
       pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297);
   
-      pdf.save("document.pdf");
+      // --- 復元 ---
+      hiddenElems.forEach((el) => ((el as HTMLElement).style.display = ""));
   
-      // 戻す
+      pdf.save("document.pdf");
       setCurrentPage("report");
     } else {
       console.error("ページの要素が見つかりません");
     }
   };
+  
   
   
 
@@ -142,7 +147,7 @@ export function ReportForm2() {
                   width: 550,
                   height: 150,
                   style: {
-                    width: "100%",
+                    width: "540px",
                     height: "150px",
                     border: "1px solid #ccc",
                     borderRadius: "5px",
@@ -154,6 +159,7 @@ export function ReportForm2() {
               </div>
               <button
                 type="button"
+                className="no-print" // ←これ追加！
                 onClick={() => clearSignature(sig.ref)}
                 style={{
                   marginTop: "10px", padding: "10px 20px",
