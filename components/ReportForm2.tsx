@@ -23,6 +23,12 @@ export function ReportForm2() {
     const signaturePage = document.getElementById("signature-page");
   
     if (reportPage && signaturePage) {
+      // --- クリアボタンを非表示 ---
+      const hiddenElems = document.querySelectorAll(".no-print");
+      hiddenElems.forEach((el) => {
+        (el as HTMLElement).style.display = "none";
+      });
+  
       // --- 1ページ目: 報告ページ ---
       setCurrentPage("report");
       await new Promise((res) => setTimeout(res, 200));
@@ -35,13 +41,12 @@ export function ReportForm2() {
       const reportImgData = reportCanvas.toDataURL("image/png");
       pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297);
   
-      // --- 2ページ目: 署名ページ（強制表示＆高さ調整） ---
+      // --- 2ページ目: 署名ページ ---
       setCurrentPage("signature");
       await new Promise((res) => setTimeout(res, 200));
   
-      // 高さ調整
       signaturePage.style.height = "auto";
-      signaturePage.style.minHeight = "297mm"; // A4の高さに最低合わせる
+      signaturePage.style.minHeight = "297mm";
       signaturePage.style.overflow = "visible";
   
       const signatureCanvas = await html2canvas(signaturePage, {
@@ -52,6 +57,11 @@ export function ReportForm2() {
       const signatureImgData = signatureCanvas.toDataURL("image/png");
       pdf.addPage();
       pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297);
+  
+      // --- 非表示を元に戻す ---
+      hiddenElems.forEach((el) => {
+        (el as HTMLElement).style.display = "";
+      });
   
       pdf.save("document.pdf");
   
@@ -196,6 +206,7 @@ export function ReportForm2() {
       ) : (
         <button
           onClick={() => setCurrentPage("report")}
+          className="no-print"
           style={{
             marginTop: "20px", padding: "10px 20px", border: "none",
             backgroundColor: "#f44336", color: "#fff",
