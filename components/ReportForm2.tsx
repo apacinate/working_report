@@ -19,45 +19,41 @@ export function ReportForm2() {
   const generatePDF = async () => {
     const pdf = new jsPDF("p", "mm", "a4");
   
-    const reportPage = document.getElementById("report-page");
-    const signaturePage = document.getElementById("signature-page");
+    const hiddenElems = document.querySelectorAll(".no-print");
+    hiddenElems.forEach(el => (el as HTMLElement).style.display = "none");
   
-    if (reportPage && signaturePage) {
-      // ボタン類を非表示
-      const hiddenElems = document.querySelectorAll(".no-print");
-      hiddenElems.forEach(el => (el as HTMLElement).style.display = "none");
+    const renderAndAddPage = async (id: string) => {
+      const el = document.getElementById(id);
+      if (!el) return;
   
-      const renderAndAddPage = async (element: HTMLElement) => {
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-        });
-        const imgData = canvas.toDataURL("image/png");
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+      });
   
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
   
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      };
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    };
   
-      // ページ切り替えとレンダリング
-      setCurrentPage("report");
-      await new Promise((res) => setTimeout(res, 200));
-      await renderAndAddPage(reportPage);
+    // 1ページ目
+    setCurrentPage("report");
+    await new Promise((res) => setTimeout(res, 500)); // 時間を少し長めに待つ
+    await renderAndAddPage("report-page");
   
-      setCurrentPage("signature");
-      await new Promise((res) => setTimeout(res, 200));
-      await renderAndAddPage(signaturePage);
+    // 2ページ目
+    setCurrentPage("signature");
+    await new Promise((res) => setTimeout(res, 500)); // 同様に待機
+    await renderAndAddPage("signature-page");
   
-      // ボタン類を戻す
-      hiddenElems.forEach(el => (el as HTMLElement).style.display = "");
+    hiddenElems.forEach(el => (el as HTMLElement).style.display = "");
   
-      pdf.save("document.pdf");
-      setCurrentPage("report");
-    }
+    pdf.save("document.pdf");
+    setCurrentPage("report");
   };
-
   
 
   const getPageStyle = (page: "report" | "signature"): React.CSSProperties => ({
