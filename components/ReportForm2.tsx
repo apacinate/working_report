@@ -57,7 +57,7 @@ export function ReportForm2() {
       pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297);
   
       // --- 復元 ---
-      hiddenElems.forEach((el) => ((el as HTMLElement).style.display = ""));
+      //hiddenElems.forEach((el) => ((el as HTMLElement).style.display = ""));
   
       pdf.save("document.pdf");
       setCurrentPage("report");
