@@ -19,35 +19,31 @@ export function ReportForm2() {
 
   const addPage = (currentIndex: number) => {
     const newPages = [...pages];
-    newPages.splice(currentIndex + 1, 0, `inserted-${Date.now()}`); // Unique ID for the inserted page
+    newPages.splice(currentIndex + 1, 0, `inserted-${Date.now()}`); // Unique ID for each inserted page
     setPages(newPages);
   };
 
   const generatePDF = async () => {
-    const pdf = new jsPDF("p", "mm", "a4"); // Standard A4 size
+    const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-  
+
     try {
       for (let i = 0; i < pages.length; i++) {
         const pageElement = document.getElementById(`${pages[i]}-page`);
         if (pageElement) {
-          // Render and capture each page
-          const canvas = await html2canvas(pageElement, { scale: 2 }); // Higher scale for quality
+          const canvas = await html2canvas(pageElement, { scale: 2 });
           const imgData = canvas.toDataURL("image/png");
-  
-          // Add captured content to PDF
           if (i > 0) pdf.addPage();
           pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
         }
       }
-  
+
       pdf.save("report_document.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
     }
   };
-  
 
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", border: "2px solid #ccc", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
