@@ -31,16 +31,11 @@ export function ReportForm2() {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
   
-    const originalPageIndex = currentPageIndex; // 現在のページを保持
-  
     try {
       for (let i = 0; i < pages.length; i++) {
-        setCurrentPageIndex(i); // ページ表示を切り替え
+        const pageId = `${pages[i]}-page`;
+        const pageElement = document.getElementById(pageId);
   
-        // Wait for DOM update (必要に応じて強制再描画のために少し待つ)
-        await new Promise((resolve) => setTimeout(resolve, 300));
-  
-        const pageElement = document.getElementById(`${pages[i]}-page`);
         if (pageElement) {
           const canvas = await html2canvas(pageElement, { scale: 2 });
           const imgData = canvas.toDataURL("image/png");
@@ -53,12 +48,8 @@ export function ReportForm2() {
       pdf.save("report_document.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
-    } finally {
-      // 元のページに戻す
-      setCurrentPageIndex(originalPageIndex);
     }
-  };
-  
+  };  
 
   return (
     <div
