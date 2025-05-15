@@ -7,71 +7,38 @@ import jsPDF from "jspdf";
 
 export function ReportForm2() {
   const [currentPage, setCurrentPage] = useState<"report" | "signature">("report");
-  const [workerSignatureData, setWorkerSignatureData] = useState<string | null>(null);
-  const [repairCompanySignatureData, setRepairCompanySignatureData] = useState<string | null>(null);
-  const [managementCompanySignatureData, setManagementCompanySignatureData] = useState<string | null>(null);
 
   const workerSigPadRef = useRef<SignaturePad>(null);
   const repairCompanySigPadRef = useRef<SignaturePad>(null);
   const managementCompanySigPadRef = useRef<SignaturePad>(null);
 
-  const clearSignature = (ref: React.MutableRefObject<SignaturePad | null>, setSignatureData: (value: string | null) => void) => {
+  const clearSignature = (ref: React.MutableRefObject<SignaturePad | null>) => {
     ref.current?.clear();
-    setSignatureData(null);
-  };
-
-  const saveSignatureData = () => {
-    if (workerSigPadRef.current) {
-      setWorkerSignatureData(workerSigPadRef.current.toDataURL());
-    }
-    if (repairCompanySigPadRef.current) {
-      setRepairCompanySignatureData(repairCompanySigPadRef.current.toDataURL());
-    }
-    if (managementCompanySigPadRef.current) {
-      setManagementCompanySignatureData(managementCompanySigPadRef.current.toDataURL());
-    }
-  };
-
-  const reloadSignatureData = () => {
-    if (workerSigPadRef.current && workerSignatureData) {
-      workerSigPadRef.current.fromDataURL(workerSignatureData);
-    }
-    if (repairCompanySigPadRef.current && repairCompanySignatureData) {
-      repairCompanySigPadRef.current.fromDataURL(repairCompanySignatureData);
-    }
-    if (managementCompanySigPadRef.current && managementCompanySignatureData) {
-      managementCompanySigPadRef.current.fromDataURL(managementCompanySignatureData);
-    }
-  };
-
-  const handlePageChange = (newPage: "report" | "signature") => {
-    if (newPage === "report") {
-      saveSignatureData(); // Save signatures when leaving the signature page
-    } else if (newPage === "signature") {
-      reloadSignatureData(); // Reload signatures when returning to the signature page
-    }
-    setCurrentPage(newPage);
   };
 
   const generatePDF = async () => {
-    const pdf = new jsPDF("p", "mm", "a4");
+    const pdf = new jsPDF("p", "mm", "a4"); // A4-sized PDF
     const reportPage = document.getElementById("report-page");
     const signaturePage = document.getElementById("signature-page");
 
     if (reportPage && signaturePage) {
       try {
-        const reportCanvas = await html2canvas(reportPage, { scale: 2 });
+        // Convert Report Page to Canvas
+        const reportCanvas = await html2canvas(reportPage, { scale: 2 }); // Higher scale for better quality
         const reportImgData = reportCanvas.toDataURL("image/png");
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
         pdf.addImage(reportImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
+        // Add New Page for Signature Page
         pdf.addPage();
 
+        // Convert Signature Page to Canvas
         const signatureCanvas = await html2canvas(signaturePage, { scale: 2 });
         const signatureImgData = signatureCanvas.toDataURL("image/png");
         pdf.addImage(signatureImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
+        // Save PDF
         pdf.save("report_document.pdf");
       } catch (error) {
         console.error("Error generating PDF:", error);
@@ -90,23 +57,41 @@ export function ReportForm2() {
             <form>
               <div className="form-section" style={{ marginBottom: "10px" }}>
                 <label>受付番号:</label>
-                <input type="text" placeholder="受付番号を入力" style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
+                <input
+                  type="text"
+                  placeholder="受付番号を入力"
+                  style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+                />
               </div>
               <div className="form-section" style={{ marginBottom: "10px" }}>
                 <label>店舗名:</label>
-                <input type="text" placeholder="店舗名を入力" style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
+                <input
+                  type="text"
+                  placeholder="店舗名を入力"
+                  style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+                />
               </div>
               <div className="form-section" style={{ marginBottom: "10px" }}>
                 <label>作業実施日:</label>
-                <input type="date" style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }} />
+                <input
+                  type="date"
+                  style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+                />
               </div>
             </form>
           </div>
-          <button onClick={() => handlePageChange("signature")} style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}>
+
+          <button
+            onClick={() => setCurrentPage("signature")}
+            style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+          >
             次のページへ
           </button>
 
-          <button onClick={generatePDF} style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#2196F3", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}>
+          <button
+            onClick={generatePDF}
+            style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#2196F3", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+          >
             PDFを出力
           </button>
         </>
@@ -117,18 +102,54 @@ export function ReportForm2() {
             <form>
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="worker">作業担当者 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
-                  <SignaturePad ref={workerSigPadRef} canvasProps={{ width: 520, height: 180 }} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
+                  <SignaturePad ref={workerSigPadRef} />
                 </div>
-                <button type="button" onClick={() => clearSignature(workerSigPadRef, setWorkerSignatureData)} style={{ marginTop: "10px", padding: "10px 20px", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer" }}>
+                <button
+                  type="button"
+                  onClick={() => clearSignature(workerSigPadRef)}
+                  style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer" }}
+                >
                   クリア
                 </button>
               </div>
-              <button onClick={() => handlePageChange("report")} style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}>
-                前のページへ
-              </button>
+
+              <div className="form-section" style={{ marginBottom: "20px" }}>
+                <label htmlFor="repair-company">修理会社 (サイン):</label>
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
+                  <SignaturePad ref={repairCompanySigPadRef} />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => clearSignature(repairCompanySigPadRef)}
+                  style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer" }}
+                >
+                  クリア
+                </button>
+              </div>
+
+              <div className="form-section" style={{ marginBottom: "20px" }}>
+                <label htmlFor="management-company">管理会社名 (サイン):</label>
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
+                  <SignaturePad ref={managementCompanySigPadRef} />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => clearSignature(managementCompanySigPadRef)}
+                  style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer" }}
+                >
+                  クリア
+                </button>
+              </div>
             </form>
           </div>
+
+          <button
+            onClick={() => setCurrentPage("report")}
+            style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#f44336", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+          >
+            前のページへ
+          </button>
         </>
       )}
     </div>
