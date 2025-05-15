@@ -60,7 +60,7 @@ export function ReportForm2() {
                 <input
                   type="text"
                   placeholder="受付番号を入力"
-                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+                  style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
                 />
               </div>
               <div className="form-section" style={{ marginBottom: "10px" }}>
@@ -68,14 +68,14 @@ export function ReportForm2() {
                 <input
                   type="text"
                   placeholder="店舗名を入力"
-                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+                  style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
                 />
               </div>
               <div className="form-section" style={{ marginBottom: "10px" }}>
                 <label>作業実施日:</label>
                 <input
                   type="date"
-                  style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+                  style={{ width: "540px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
                 />
               </div>
             </form>
