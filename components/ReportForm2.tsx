@@ -34,7 +34,7 @@ export function ReportForm2() {
       const reportCanvas = await html2canvas(reportPage, {
         scrollY: -window.scrollY,
         useCORS: true,
-        scale: 2,
+        scale: 1,
       });
       const reportImgData = reportCanvas.toDataURL("image/png");
       pdf.addImage(reportImgData, "PNG", 0, 0, 210, 297);
@@ -55,10 +55,6 @@ export function ReportForm2() {
       const signatureImgData = signatureCanvas.toDataURL("image/png");
       pdf.addPage();
       pdf.addImage(signatureImgData, "PNG", 0, 0, 210, 297);
-  
-      // --- 復元 ---
-      //hiddenElems.forEach((el) => ((el as HTMLElement).style.display = ""));
-  
       pdf.save("document.pdf");
       setCurrentPage("report");
     } else {
