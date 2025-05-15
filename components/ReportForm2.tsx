@@ -23,22 +23,18 @@ export function ReportForm2() {
 
     if (reportPage && signaturePage) {
       try {
-        // Convert Report Page to Canvas
-        const reportCanvas = await html2canvas(reportPage, { scale: 2 }); // Higher scale for better quality
+        const reportCanvas = await html2canvas(reportPage, { scale: 2 });
         const reportImgData = reportCanvas.toDataURL("image/png");
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
         pdf.addImage(reportImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
-        // Add New Page for Signature Page
         pdf.addPage();
 
-        // Convert Signature Page to Canvas
         const signatureCanvas = await html2canvas(signaturePage, { scale: 2 });
         const signatureImgData = signatureCanvas.toDataURL("image/png");
         pdf.addImage(signatureImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
-        // Save PDF
         pdf.save("report_document.pdf");
       } catch (error) {
         console.error("Error generating PDF:", error);
@@ -102,8 +98,15 @@ export function ReportForm2() {
             <form>
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="worker">作業担当者 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
-                  <SignaturePad ref={workerSigPadRef} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
+                  <SignaturePad
+                    ref={workerSigPadRef}
+                    canvasProps={{
+                      width: 520, // Adjusting canvas width
+                      height: 180, // Adjusting canvas height
+                      style: { display: "block" }, // Ensures proper display
+                    }}
+                  />
                 </div>
                 <button
                   type="button"
@@ -116,8 +119,15 @@ export function ReportForm2() {
 
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="repair-company">修理会社 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
-                  <SignaturePad ref={repairCompanySigPadRef} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
+                  <SignaturePad
+                    ref={repairCompanySigPadRef}
+                    canvasProps={{
+                      width: 520,
+                      height: 180,
+                      style: { display: "block" },
+                    }}
+                  />
                 </div>
                 <button
                   type="button"
@@ -130,8 +140,15 @@ export function ReportForm2() {
 
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="management-company">管理会社名 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
-                  <SignaturePad ref={managementCompanySigPadRef} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
+                  <SignaturePad
+                    ref={managementCompanySigPadRef}
+                    canvasProps={{
+                      width: 520,
+                      height: 180,
+                      style: { display: "block" },
+                    }}
+                  />
                 </div>
                 <button
                   type="button"
