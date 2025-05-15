@@ -28,6 +28,12 @@ export function ReportForm2() {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
+    // Make all pages visible temporarily for capturing
+    const allPages = document.querySelectorAll(".page");
+    allPages.forEach((page) => {
+      (page as HTMLElement).style.display = "block";
+    });
+
     for (let i = 0; i < pages.length; i++) {
       const pageElement = document.getElementById(`${pages[i]}-page`);
       if (pageElement) {
@@ -37,6 +43,11 @@ export function ReportForm2() {
         pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
       }
     }
+
+    // Restore visibility of the current page
+    allPages.forEach((page, index) => {
+      (page as HTMLElement).style.display = index === currentPageIndex ? "block" : "none";
+    });
 
     pdf.save("report_document.pdf");
   };
@@ -48,7 +59,7 @@ export function ReportForm2() {
 
         if (page === "report") {
           return (
-            <div id="report-page" key={index}>
+            <div id="report-page" className="page" key={index} style={{ display: "block" }}>
               <h1 style={{ textAlign: "center" }}>作業報告書ページ</h1>
               <form>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
@@ -95,7 +106,7 @@ export function ReportForm2() {
 
         if (page.startsWith("inserted")) {
           return (
-            <div id={`${page}-page`} key={index}>
+            <div id={`${page}-page`} className="page" key={index} style={{ display: "block" }}>
               <h1 style={{ textAlign: "center" }}>挿入されたページ</h1>
               <form>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
@@ -149,7 +160,7 @@ export function ReportForm2() {
 
         if (page === "signature") {
           return (
-            <div id="signature-page" key={index}>
+            <div id="signature-page" className="page" key={index} style={{ display: "block" }}>
               <h1 style={{ textAlign: "center" }}>署名ページ</h1>
               <form>
                 <div className="form-section" style={{ marginBottom: "20px" }}>
