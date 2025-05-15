@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import SignaturePad from "react-signature-canvas";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -11,6 +11,22 @@ export function ReportForm2() {
   const workerSigPadRef = useRef<SignaturePad>(null);
   const repairCompanySigPadRef = useRef<SignaturePad>(null);
   const managementCompanySigPadRef = useRef<SignaturePad>(null);
+
+  useEffect(() => {
+    // Ensures the canvas is resized to fill its container
+    const resizeCanvas = (ref: React.MutableRefObject<SignaturePad | null>) => {
+      if (ref.current) {
+        const canvas = ref.current.getCanvas();
+        canvas.width = canvas.parentElement?.offsetWidth || canvas.width;
+        canvas.height = canvas.parentElement?.offsetHeight || canvas.height;
+      }
+    };
+
+    // Resize all signature fields on mount or page change
+    resizeCanvas(workerSigPadRef);
+    resizeCanvas(repairCompanySigPadRef);
+    resizeCanvas(managementCompanySigPadRef);
+  }, [currentPage]);
 
   const clearSignature = (ref: React.MutableRefObject<SignaturePad | null>) => {
     ref.current?.clear();
@@ -23,22 +39,18 @@ export function ReportForm2() {
 
     if (reportPage && signaturePage) {
       try {
-        // Convert Report Page to Canvas
-        const reportCanvas = await html2canvas(reportPage, { scale: 2 }); // Higher scale for better quality
+        const reportCanvas = await html2canvas(reportPage, { scale: 2 });
         const reportImgData = reportCanvas.toDataURL("image/png");
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
         pdf.addImage(reportImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
-        // Add New Page for Signature Page
         pdf.addPage();
 
-        // Convert Signature Page to Canvas
         const signatureCanvas = await html2canvas(signaturePage, { scale: 2 });
         const signatureImgData = signatureCanvas.toDataURL("image/png");
         pdf.addImage(signatureImgData, "PNG", 0, 0, pageWidth, pageHeight);
 
-        // Save PDF
         pdf.save("report_document.pdf");
       } catch (error) {
         console.error("Error generating PDF:", error);
@@ -102,8 +114,13 @@ export function ReportForm2() {
             <form>
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="worker">作業担当者 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
-                  <SignaturePad ref={workerSigPadRef} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
+                  <SignaturePad
+                    ref={workerSigPadRef}
+                    canvasProps={{
+                      style: { width: "100%", height: "100%", display: "block" }, // Full usage of container
+                    }}
+                  />
                 </div>
                 <button
                   type="button"
@@ -116,8 +133,13 @@ export function ReportForm2() {
 
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="repair-company">修理会社 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
-                  <SignaturePad ref={repairCompanySigPadRef} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
+                  <SignaturePad
+                    ref={repairCompanySigPadRef}
+                    canvasProps={{
+                      style: { width: "100%", height: "100%", display: "block" }, // Full usage of container
+                    }}
+                  />
                 </div>
                 <button
                   type="button"
@@ -130,8 +152,13 @@ export function ReportForm2() {
 
               <div className="form-section" style={{ marginBottom: "20px" }}>
                 <label htmlFor="management-company">管理会社名 (サイン):</label>
-                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
-                  <SignaturePad ref={managementCompanySigPadRef} />
+                <div style={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px", width: "540px", height: "200px" }}>
+                  <SignaturePad
+                    ref={managementCompanySigPadRef}
+                    canvasProps={{
+                      style: { width: "100%", height: "100%", display: "block" }, // Full usage of container
+                    }}
+                  />
                 </div>
                 <button
                   type="button"
