@@ -19,7 +19,7 @@ export function ReportForm2() {
 
   const addPage = (currentIndex: number) => {
     const newPages = [...pages];
-    newPages.splice(currentIndex + 1, 0, "inserted");
+    newPages.splice(currentIndex + 1, 0, `inserted-${Date.now()}`); // Unique ID for the inserted page
     setPages(newPages);
   };
 
@@ -77,8 +77,15 @@ export function ReportForm2() {
               </form>
               <button
                 type="button"
-                onClick={() => setCurrentPageIndex(index + 1)}
+                onClick={() => addPage(index)}
                 style={{ marginTop: "20px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
+              >
+                + ページを挿入
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentPageIndex(index + 1)}
+                style={{ marginTop: "10px", padding: "10px 20px", border: "none", backgroundColor: "#4CAF50", color: "#fff", borderRadius: "5px", cursor: "pointer", width: "100%" }}
               >
                 次のページへ
               </button>
@@ -86,9 +93,9 @@ export function ReportForm2() {
           );
         }
 
-        if (page === "inserted") {
+        if (page.startsWith("inserted")) {
           return (
-            <div id="inserted-page" key={index}>
+            <div id={`${page}-page`} key={index}>
               <h1 style={{ textAlign: "center" }}>挿入されたページ</h1>
               <form>
                 <div className="form-section" style={{ marginBottom: "10px" }}>
